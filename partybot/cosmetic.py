@@ -80,7 +80,7 @@ class CosmeticCommands(commands.Cog):
         variants_meta = []
         for variant_number, variant_data in enumerate(skin.variants):
             if variant_data['channel'] != variant_channel_tag:
-                variants_meta.append(f'{variant_number}|0')
+                variants_meta.append(f'0')
             else:
                 option_index = next(
                     (
@@ -91,7 +91,7 @@ class CosmeticCommands(commands.Cog):
                     0
                 )
 
-                variants_meta.append(f'{variant_number}|{option_index}')
+                variants_meta.append(option_index)
 
         return skin, variants_meta
 
@@ -296,7 +296,7 @@ class CosmeticCommands(commands.Cog):
     async def purpleskull(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_030_Athena_Commando_M_Halloween',
-            variants=['0|1', '1|1']
+            variants=['1', '1']
         )
 
         await self.bot.message(
@@ -314,7 +314,7 @@ class CosmeticCommands(commands.Cog):
     async def pinkghoul(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_029_Athena_Commando_F_Halloween',
-            variants=["0|2"]
+            variants=["2"]
         )
 
         await self.bot.message(
@@ -332,7 +332,7 @@ class CosmeticCommands(commands.Cog):
     async def purpleportal(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_backpack(
             asset='BID_105_GhostPortal',
-            variants=['0|1']
+            variants=['1']
         )
 
         await self.bot.message(
@@ -394,7 +394,7 @@ class CosmeticCommands(commands.Cog):
                        *variant_choices: int
                        ) -> None:
         cosmetic_variants = [
-            f"{variant_number}|{variant_choice}"
+            str(variant_choice)
             for variant_number, variant_choice
             in enumerate(variant_choices)
         ]
@@ -430,7 +430,7 @@ class CosmeticCommands(commands.Cog):
     async def ogrene(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_028_Athena_Commando_F',
-            variants=['0|2']
+            variants=['2']
         )
 
         await self.bot.message(
@@ -448,7 +448,7 @@ class CosmeticCommands(commands.Cog):
     async def ogaerial(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_017_Athena_Commando_M',
-            variants=['0|1']
+            variants=['1']
         )
 
         await self.bot.message(
@@ -466,7 +466,7 @@ class CosmeticCommands(commands.Cog):
     async def mintyelf(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_051_Athena_Commando_M_HolidayElf',
-            variants=['0|1']
+            variants=['1']
         )
 
         await self.bot.message(
@@ -654,9 +654,25 @@ class CosmeticCommands(commands.Cog):
     )
     async def copy(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
-            member = [m for m in self.bot.party.members if m.id == ctx.author.id][0]
+            member = next(
+                (
+                    m for m in self.bot.party.members if m.id == ctx.author.id
+                ),
+                None
+            )
         else:
-            member = [m for m in self.bot.party.members if m.display_name == epic_username][0]
+            member = next(
+                (
+                    m for m in self.bot.party.members if m.display_name == epic_username
+                ),
+                None
+            )
+
+        if not member:
+            return await self.bot.message(
+                content=f"No party members with the provided display name to copy.",
+                ctx=ctx
+            )
 
         await self.bot.party.me.edit(
             functools.partial(
@@ -677,8 +693,7 @@ class CosmeticCommands(commands.Cog):
             functools.partial(
                 rebootpy.ClientPartyMember.set_banner,
                 icon=member.banner[0],
-                color=member.banner[1],
-                season_level=member.banner[2]
+                color=member.banner[1]
             ),
             functools.partial(
                 rebootpy.ClientPartyMember.set_battlepass_info,
@@ -763,9 +778,9 @@ class CosmeticCommands(commands.Cog):
                           skin_level: int
                           ) -> None:
         variant_types = {
-            1: ['0|3'],
-            2: ['0|3'],
-            3: ['0|0', '1|1', '2|0']
+            1: ['3'],
+            2: ['3'],
+            3: ['0', '1', '0']
         }
 
         if 'cid' in cosmetic_id.lower():
@@ -821,7 +836,7 @@ class CosmeticCommands(commands.Cog):
 
         await self.bot.party.me.set_outfit(
             asset='CID_030_Athena_Commando_M_Halloween',
-            variants=['0|1', '1|1']
+            variants=['1', '1']
         )
 
         await self.bot.message(
@@ -832,7 +847,7 @@ class CosmeticCommands(commands.Cog):
 
         await self.bot.party.me.set_outfit(
             asset='CID_029_Athena_Commando_F_Halloween',
-            variants=["0|2"]
+            variants=["2"]
         )
 
         await self.bot.message(
@@ -843,7 +858,7 @@ class CosmeticCommands(commands.Cog):
 
         await self.bot.party.me.set_outfit(
             asset='CID_028_Athena_Commando_F',
-            variants=['0|2']
+            variants=['2']
         )
 
         await self.bot.message(
@@ -854,7 +869,7 @@ class CosmeticCommands(commands.Cog):
 
         await self.bot.party.me.set_outfit(
             asset='CID_017_Athena_Commando_M',
-            variants=['0|1']
+            variants=['1']
         )
 
         await self.bot.message(
@@ -873,7 +888,7 @@ class CosmeticCommands(commands.Cog):
     async def goldenpeely(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_701_Athena_Commando_M_BananaAgent',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 350)
         )
 
@@ -1058,7 +1073,7 @@ class CosmeticCommands(commands.Cog):
 
             await self.bot.party.me.set_outfit(
                 asset=cosmetic.id,
-                variants=['0|1']
+                variants=['1']
             )
 
             await self.bot.message(
@@ -1090,7 +1105,7 @@ class CosmeticCommands(commands.Cog):
 
             await self.bot.party.me.set_outfit(
                 asset=cosmetic.id,
-                variants=['0|2']
+                variants=['2']
             )
 
             await self.bot.message(
@@ -1172,7 +1187,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         cosmetic_variants = [
-            f"{variant_number}|{variant_choice}"
+            str(variant_choice)
             for variant_number, variant_choice
             in enumerate(variant_choices)
         ]
@@ -1311,7 +1326,7 @@ class CosmeticCommands(commands.Cog):
     async def hatlessrecon(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_022_Athena_Commando_F',
-            variants=['0|1']
+            variants=['1']
         )
 
         await self.bot.message(
@@ -1462,7 +1477,7 @@ class CosmeticCommands(commands.Cog):
     async def goldenbrutus(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_692_Athena_Commando_M_HenchmanTough',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 180)
         )
 
@@ -1482,7 +1497,7 @@ class CosmeticCommands(commands.Cog):
     async def goldenmeowscles(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_693_Athena_Commando_M_BuffCat',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 220)
         )
 
@@ -1502,7 +1517,7 @@ class CosmeticCommands(commands.Cog):
     async def goldenmidas(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_694_Athena_Commando_M_CatBurglar',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 140)
         )
 
@@ -1522,7 +1537,7 @@ class CosmeticCommands(commands.Cog):
     async def goldenskye(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_690_Athena_Commando_F_Photographer',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 350)
         )
 
@@ -1542,7 +1557,7 @@ class CosmeticCommands(commands.Cog):
     async def goldentntina(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
             asset='CID_691_Athena_Commando_F_TNTina',
-            variants=['0|3'],
+            variants=['3'],
             enlightenment=(2, 260)
         )
 

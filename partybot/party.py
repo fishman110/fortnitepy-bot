@@ -28,6 +28,8 @@ License: Apache 2.0
 import asyncio
 import datetime
 import random
+import copy
+import json
 
 from typing import Optional, Union
 
@@ -37,6 +39,19 @@ import aiohttp
 import crayons
 
 from rebootpy.ext import commands
+
+
+def parse(meta: dict) -> dict:
+    for key, value in meta.items():
+        if '_j' in key or key == 'd' or key == 'island'or key == 'data':
+            meta[key] = json.loads(value)
+        if isinstance(meta[key], dict):
+            meta[key] = parse(meta[key])
+        if isinstance(meta[key], list):
+            for i, item in enumerate(meta[key]):
+                if isinstance(item, dict):
+                    meta[key][i] = parse(item)
+    return meta
 
 
 class PartyCommands(commands.Cog):
@@ -533,5 +548,22 @@ class PartyCommands(commands.Cog):
                 content="Failed to hide everyone, as I'm not party leader",
                 colour=crayons.red,
                 ctx=ctx
+            )
+
+    @commands.dm_only()
+    @commands.command(
+        description="[Party] Gets the meta of all party members.",
+        help="Gets the meta of all party members.\n"
+             "Example: !meta",
+        usage="!meta"
+    )
+    async def meta(self, ctx: rebootpy.ext.commands.Context) -> None:
+        for member in self.bot.party.members:
+            print(member.display_name)
+            print(
+                json.dumps(
+                    parse(copy.deepcopy(member.meta.schema)),
+                    indent=4
+                )
             )
 

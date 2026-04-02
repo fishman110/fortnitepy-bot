@@ -271,8 +271,7 @@ class PartyBot(commands.Bot):
             functools.partial(
                 self.party.me.set_banner,
                 icon=config['banner'],
-                color=config['banner_colour'],
-                season_level=config['level']
+                color=config['banner_colour']
             ),
             functools.partial(
                 self.party.me.set_battlepass_info,
